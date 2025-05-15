@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -8,13 +8,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 function MessageItem({ message }) {
   const [copiedCode, setCopiedCode] = useState(null);
 
-  const copyToClipboard = (code, id) => {
-    navigator.clipboard.writeText(code).then(() => {
-      setCopiedCode(id);
-      setTimeout(() => setCopiedCode(null), 2000);
-    });
-  };
-
   return (
     <div className={`message ${message.sender}`}>
       <ReactMarkdown
@@ -23,16 +16,8 @@ function MessageItem({ message }) {
         components={{
           code({ inline, className, children, ...props }) {
             const match = /language-(\\w+)/.exec(className || '');
-            const lang = match?.[1]?.toLowerCase() || 'plaintext';
-            const codeContent = String(children).replace(/\n$/, '');
             const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
 
-            const handleClick = () => {
-              navigator.clipboard.writeText(codeContent).then(() => {
-                setCopiedCode(codeId);
-                setTimeout(() => setCopiedCode(null), 1500);
-              });
-            };
             return !inline && match ? (
               <div className="code-block-container">
                 <div className="code-header">
@@ -65,10 +50,10 @@ function MessageItem({ message }) {
                 className={className}
                 {...props}
                 style={{ cursor: 'pointer' }}
-                onClick={() => {
-                  navigator.clipboard.writeText(codeContent).then(() => {
+                onClick={(e) => {
+                  navigator.clipboard.writeText(e.target.innerText).then(() => {
                     setCopiedCode(codeId);
-                    setTimeout(() => setCopiedCode(null), 1500);
+                    setTimeout(() => setCopiedCode(null), 2000);
                   });
                 }}
               >
