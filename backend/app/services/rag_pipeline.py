@@ -45,8 +45,6 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
 
     # 🔹 Build and log prompt
     system_message = """
-    You are a helpful assistant that provides informative responses.
-    
     Format your responses using proper markdown syntax:
     - Use ## for section headings 
     - Use ### for subsection headings
@@ -55,8 +53,8 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
     - Use **bold** for emphasis on important points
     - Create tables with | and - when presenting tabular information
     - Use backticks for inline code or parameter names
-    
-    Ensure your response is well-structured, readable, and properly formatted.
+    - Respond using markdown. Wrap all code in fenced blocks with language identifiers (like ```json, ```python, etc).
+    - Ensure your textual response is well-structured, readable, and properly formatted.
     """
     
     # Build conversation history context

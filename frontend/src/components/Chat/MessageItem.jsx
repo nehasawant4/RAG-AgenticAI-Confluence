@@ -8,8 +8,6 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 function MessageItem({ message }) {
   const [copiedCode, setCopiedCode] = useState(null);
 
-  const codeIdBase = useMemo(() => `code-${message.id}`, [message.id]);
-
   const copyToClipboard = (code, id) => {
     navigator.clipboard.writeText(code).then(() => {
       setCopiedCode(id);
@@ -25,18 +23,20 @@ function MessageItem({ message }) {
         components={{
           code({ inline, className, children, ...props }) {
             const match = /language-(\\w+)/.exec(className || '');
-            const codeId = `${codeIdBase}-${match?.[1] || 'plain'}`;
+            const lang = match?.[1]?.toLowerCase() || 'plaintext';
+            const codeContent = String(children).replace(/\n$/, '');
+            const codeId = `code-${Math.random().toString(36).substr(2, 9)}`;
 
+            const handleClick = () => {
+              navigator.clipboard.writeText(codeContent).then(() => {
+                setCopiedCode(codeId);
+                setTimeout(() => setCopiedCode(null), 1500);
+              });
+            };
             return !inline && match ? (
               <div className="code-block-container">
                 <div className="code-header">
                   <span className="code-language">{match[1]}</span>
-                  <button
-                    className="copy-button"
-                    onClick={() => copyToClipboard(String(children).replace(/\n$/, ''), codeId)}
-                  >
-                    {copiedCode === codeId ? 'Copied!' : 'Copy'}
-                  </button>
                 </div>
                 <SyntaxHighlighter
                   style={vscDarkPlus}
@@ -61,7 +61,17 @@ function MessageItem({ message }) {
                 </SyntaxHighlighter>
               </div>
             ) : (
-              <code className={className} {...props}>
+              <code
+                className={className}
+                {...props}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  navigator.clipboard.writeText(codeContent).then(() => {
+                    setCopiedCode(codeId);
+                    setTimeout(() => setCopiedCode(null), 1500);
+                  });
+                }}
+              >
                 {children}
               </code>
             );
