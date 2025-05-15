@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Sidebar from './components/Sidebar'
-import UploadFile from './components/UploadFile'
-import ChatInterface from './components/ChatInterface'
+import UploadFile from './components/Upload/UploadFile'
+import ChatInterface from './components/Chat/ChatInterface'
 import './App.css'
 
 function App() {
