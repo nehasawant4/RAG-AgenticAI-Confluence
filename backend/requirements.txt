@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+requests
+openai
+langchain
+beautifulsoup4
+html2text
+python-dotenv 

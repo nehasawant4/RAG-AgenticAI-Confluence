@@ -20,6 +20,12 @@ function Sidebar({ activeTab, setActiveTab, isVisible }) {
           Fetch GitHub Repo
         </button>
         <button 
+          className={`sidebar-button ${activeTab === 'upload' ? 'active' : ''}`}
+          onClick={() => setActiveTab('upload')}
+        >
+          Upload File
+        </button>
+        <button 
           className={`sidebar-button ${activeTab === 'chat' ? 'active' : ''}`}
           onClick={() => setActiveTab('chat')}
         >
