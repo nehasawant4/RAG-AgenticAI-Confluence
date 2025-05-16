@@ -1,0 +1,78 @@
+import React, { useState, useEffect } from 'react';
+import './ConfluencePreview.css';
+
+function ConfluencePreview({ pageId, onClose }) {
+  const [pageContent, setPageContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (pageId) {
+      fetchPageContent();
+    }
+  }, [pageId]);
+
+  const fetchPageContent = async () => {
+    setLoading(true);
+    try {
+      // Use the /content endpoint to fetch page content
+      const response = await fetch(`http://localhost:8000/ingest/confluence/content?id=${pageId}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch page content');
+      }
+
+      const data = await response.json();
+      setPageContent(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="confluence-preview">
+        <div className="preview-header">
+          <h3>Loading...</h3>
+          <button className="close-button" onClick={onClose}>×</button>
+        </div>
+        <div className="preview-loading">Loading page content...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="confluence-preview">
+        <div className="preview-header">
+          <h3>Error</h3>
+          <button className="close-button" onClick={onClose}>×</button>
+        </div>
+        <div className="preview-error">
+          <p>Failed to load page content: {error}</p>
+          <button className="retry-button" onClick={fetchPageContent}>Retry</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="confluence-preview">
+      <div className="preview-header">
+        <h3>{pageContent?.title || 'Page Preview'}</h3>
+        <button className="close-button" onClick={onClose}>×</button>
+      </div>
+      <div className="preview-content">
+        {pageContent ? (
+          <div className="page-content" dangerouslySetInnerHTML={{ __html: pageContent.html }} />
+        ) : (
+          <p>No content available</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default ConfluencePreview;

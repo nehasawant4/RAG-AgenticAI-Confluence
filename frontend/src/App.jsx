@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Sidebar from './components/Sidebar'
 import UploadFile from './components/Upload/UploadFile'
 import ChatInterface from './components/Chat/ChatInterface'
+import FetchConfluence from './components/Confluence/FetchConfluence'
 import './App.css'
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
       />
       <main className={`main-content ${!sidebarVisible ? 'full-width' : ''}`}>
         {activeTab === 'chat' && <ChatInterface />}
-        {activeTab === 'confluence' && <div className="placeholder-content">Confluence Integration Coming Soon</div>}
+        {activeTab === 'confluence' && <FetchConfluence />}
         {activeTab === 'github' && <div className="placeholder-content">GitHub Integration Coming Soon</div>}
         {activeTab === 'upload' && <UploadFile />}
       </main>

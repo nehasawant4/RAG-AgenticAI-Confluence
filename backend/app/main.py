@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import query, upload_file
+from app.api import query, upload_file, ingest_confluence
 
 app = FastAPI(
     title="AgenticAI RAG Backend",
@@ -17,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#app.include_router(ingest_confluence.router, prefix="/ingest/confluence", tags=["Ingest - Confluence"])
+app.include_router(ingest_confluence.router, prefix="/ingest/confluence", tags=["Ingest - Confluence"])
 #app.include_router(ingest_github.router, prefix="/ingest/github", tags=["Ingest - GitHub"])
 app.include_router(query.router, prefix="/query", tags=["RAG Query"])
 app.include_router(upload_file.router, prefix="/upload", tags=["Upload"])
