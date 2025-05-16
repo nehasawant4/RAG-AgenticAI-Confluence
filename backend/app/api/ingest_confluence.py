@@ -6,6 +6,7 @@ from typing import Optional
 import os
 from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
+import re
 
 load_dotenv()
 router = APIRouter()
@@ -106,14 +107,77 @@ def get_confluence_page_content(id: str = Query(..., description="Confluence pag
         content = response.json()
         html = content["body"]["storage"]["value"]
         title = content["title"]
+        
+        # Debug - print the original HTML to see what we're working with
+        print("ORIGINAL HTML:")
+        print(html[:500])  # Print first 500 chars to see structure
+        
+        # Create a patched version of the HTML that browsers can render
+        patched_html = html
+        
+        # Regex patterns to match Confluence code blocks
+        # These often use the ac:structured-macro format
+        code_block_pattern = r'<ac:structured-macro ac:name="code"[^>]*>(.*?)</ac:structured-macro>'
+        
+        # Find all code blocks in the HTML
+        code_blocks = re.findall(code_block_pattern, html, re.DOTALL)
+        
+        # For each code block, extract its content and replace with proper HTML
+        for i, block in enumerate(code_blocks):
+            # Try to find the actual code content
+            code_content = ""
+            
+            # Look for plain-text-body content first
+            plain_text_match = re.search(r'<ac:plain-text-body[^>]*?><!\[CDATA\[(.*?)]]></ac:plain-text-body>', block, re.DOTALL)
+            if plain_text_match:
+                code_content = plain_text_match.group(1)
+            else:
+                # Try other patterns that might contain code
+                rich_text_match = re.search(r'<ac:rich-text-body[^>]*?>(.*?)</ac:rich-text-body>', block, re.DOTALL)
+                if rich_text_match:
+                    code_content = rich_text_match.group(1)
+                else:
+                    # If we can't find content, use any text within the block
+                    code_content = re.sub(r'<[^>]+>', '', block)
+                    code_content = code_content.strip()
+            
+            # Create a properly formatted HTML pre block
+            replacement = f'<pre class="confluence-code-block">{code_content}</pre>'
+            
+            # Replace the original macro with our new pre block - limit to one replacement per code block
+            patched_html = re.sub(code_block_pattern, replacement, patched_html, count=1, flags=re.DOTALL)
+        
+        # Handle other types of Confluence macros that might contain code
+        patched_html = re.sub(r'<ac:structured-macro ac:name="codeblock"[^>]*>(.*?)</ac:structured-macro>', 
+                             r'<pre class="confluence-code-block">\1</pre>', patched_html, flags=re.DOTALL)
+        
+        # Remove CDATA tags but keep their content
+        patched_html = re.sub(r'<!\[CDATA\[(.*?)]]>', r'\1', patched_html, flags=re.DOTALL)
+        
+        # Process with BeautifulSoup for final cleanup
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(patched_html, "html.parser")
+        
+        # Get the final HTML
+        processed_html = str(soup)
+        
+        # Add fallback inline styling for code blocks
+        processed_html = processed_html.replace('<pre class="confluence-code-block">', 
+                          '<pre class="confluence-code-block" style="display:block; white-space:pre; overflow-x:auto; background-color:#1e1e1e; color:#e0e0e0; padding:16px; border-radius:4px; font-family:monospace; line-height:1.4; border:1px solid #444; max-height:500px;">')
 
+        # Debug - print a sample of the processed HTML to verify changes
+        print("PROCESSED HTML:")
+        print(processed_html[:500])  # Print first 500 chars
+        
         return {
             "id": id,
             "title": title,
-            "html": html
+            "html": processed_html
         }
 
     except Exception as e:
+        import traceback
+        print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/embed")

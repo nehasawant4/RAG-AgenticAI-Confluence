@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ConfluencePreview.css';
 
 function ConfluencePreview({ pageId, onClose }) {
   const [pageContent, setPageContent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const contentRef = useRef(null);
 
   useEffect(() => {
     if (pageId) {
       fetchPageContent();
     }
   }, [pageId]);
+
+  useEffect(() => {
+    // Process any structured macros that might still exist in the rendered content
+    if (contentRef.current && pageContent) {
+      processMacrosInDOM();
+    }
+  }, [pageContent]);
 
   const fetchPageContent = async () => {
     setLoading(true);
@@ -29,6 +37,28 @@ function ConfluencePreview({ pageId, onClose }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Process any structured macros that might be in the DOM after rendering
+  const processMacrosInDOM = () => {
+    if (!contentRef.current) return;
+
+    // Find all elements that might be structured macros
+    const macroElements = contentRef.current.querySelectorAll('[ac\\:name]');
+    const structuredMacros = contentRef.current.querySelectorAll('ac\\:structured-macro');
+    const allMacros = [...macroElements, ...structuredMacros];
+
+    allMacros.forEach(macro => {
+      // Create a pre element to replace the macro
+      const pre = document.createElement('pre');
+      pre.className = 'confluence-code-block';
+      pre.textContent = macro.textContent || '[Code block]';
+      
+      // Replace the macro with the pre element
+      if (macro.parentNode) {
+        macro.parentNode.replaceChild(pre, macro);
+      }
+    });
   };
 
   if (loading) {
@@ -66,7 +96,7 @@ function ConfluencePreview({ pageId, onClose }) {
       </div>
       <div className="preview-content">
         {pageContent ? (
-          <div className="page-content" dangerouslySetInnerHTML={{ __html: pageContent.html }} />
+          <div className="page-content" ref={contentRef} dangerouslySetInnerHTML={{ __html: pageContent.html }} />
         ) : (
           <p>No content available</p>
         )}

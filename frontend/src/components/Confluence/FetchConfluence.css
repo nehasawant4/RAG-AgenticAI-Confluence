@@ -6,8 +6,9 @@
 
 .confluence-container {
   padding: 20px;
+  padding-right: 0px;
   height: 100%;
-  width: 30%;
+  width: 35%;
   overflow-y: auto;
 }
 
@@ -85,7 +86,7 @@
 }
 
 .page-title {
-  font-size: 14px;
+  font-size: 18px;
   color: white;
   flex-grow: 1;
 }
