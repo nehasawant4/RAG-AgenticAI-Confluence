@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import 'highlight.js/styles/github-dark.css';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
@@ -14,19 +14,48 @@ const styles = {
 };
 
 function ChatInterface() {
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hello! How can I help you today?", sender: "ai" }
-  ]);
+  const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [sessionId, setSessionId] = useState(() => `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
+  const [sessionId, setSessionId] = useState(() => {
+    // Retrieve existing sessionId from sessionStorage or create a new one
+    return sessionStorage.getItem('chatSessionId') || 
+      `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+  });
+
+  // Load messages from sessionStorage on initial render
+  useEffect(() => {
+    const savedMessages = sessionStorage.getItem('chatMessages');
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+    } else {
+      // Set default welcome message if no saved messages
+      setMessages([
+        { id: 1, text: "Hello! How can I help you today?", sender: "ai" }
+      ]);
+    }
+    
+    // Save sessionId to sessionStorage
+    sessionStorage.setItem('chatSessionId', sessionId);
+  }, [sessionId]);
+
+  // Save messages to sessionStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      sessionStorage.setItem('chatMessages', JSON.stringify(messages));
+    }
+  }, [messages]);
 
   // Create a new session
   const startNewSession = () => {
-    setSessionId(`session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`);
-    setMessages([
+    const newSessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    setSessionId(newSessionId);
+    const defaultMessages = [
       { id: 1, text: "Hello! How can I help you today?", sender: "ai" }
-    ]);
+    ];
+    setMessages(defaultMessages);
+    sessionStorage.setItem('chatSessionId', newSessionId);
+    sessionStorage.setItem('chatMessages', JSON.stringify(defaultMessages));
   };
 
   const handleSendMessage = async (e) => {

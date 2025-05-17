@@ -40,18 +40,15 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
     )
 
     # 🔹 Filter and construct context
-    matches = [m for m in results.matches if m.score >= 0.5]
+    matches = [m for m in results.matches if m.score >= 0.1]
     
     # Check if we have any relevant matches
     if not matches:
-        return {
-            "answer": "I don't have enough information in my knowledge base to answer this question accurately.",
-            "sources": []
-        }
-    
+        sources = []
+    else:
+        sources = [m.metadata.get("source", "N/A") for m in matches]
+        
     context = "\n\n".join([m.metadata.get("text", "") for m in matches])
-    sources = [m.metadata.get("source", "N/A") for m in matches]
-
     # 🔹 Build and log prompt
     system_message = """
     Format your responses using proper markdown syntax:
@@ -64,8 +61,8 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
     - Use backticks for inline code or parameter names
     - Respond using markdown. Wrap all code in fenced blocks with language identifiers (like ```json, ```python, etc).
     - Ensure your textual response is well-structured, readable, and properly formatted.
-    - Only answer based on the provided context. If the context doesn't contain relevant information to answer the question, state that you don't have enough information.
-    - Do not make up or infer information that isn't present in the context.
+    - You MUST ONLY answer based on the provided context. If the context doesn't contain relevant information to answer the question, state that you don't have enough information.
+    - DO NOT answer from prior knowledge or assumptions.
     """
     
     # Build conversation history context
@@ -106,7 +103,7 @@ Question: {question}"""
             {"role": "system", "content": system_message},
             {"role": "user", "content": prompt}
         ], 
-        temperature=0.3,
+        temperature=0.5,
         max_tokens=1500,
         top_p=1.0
     )
