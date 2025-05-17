@@ -29,6 +29,7 @@ function ChatHeader({ sessionId, startNewSession }) {
   return (
     <div style={styles.chatHeader}>
       <button 
+        className="clear-button"
         onClick={startNewSession} 
         style={styles.newSessionButton}>
           Clear Chat

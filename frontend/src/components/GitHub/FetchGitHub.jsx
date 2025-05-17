@@ -3,7 +3,7 @@ import './FetchGitHub.css';
 import GitHubPreview from './GitHubPreview';
 
 function FetchGitHub() {
-  const [repoUrl, setRepoUrl] = useState('https://github.com/nehasawant4/RAG-AgenticAI-Confluence');
+  const [repoUrl, setRepoUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [fileTree, setFileTree] = useState([]);
@@ -12,6 +12,7 @@ function FetchGitHub() {
   const [ingesting, setIngesting] = useState(false);
   const [ingestResults, setIngestResults] = useState({});
   const [previewFile, setPreviewFile] = useState(null);
+  const [showSuggestion, setShowSuggestion] = useState(false);
 
   const fetchGitHubRepo = async () => {
     if (!repoUrl) {
@@ -203,19 +204,61 @@ function FetchGitHub() {
     .filter(path => selectedFiles[path].type === 'file')
     .length;
 
+  const handleSuggestionClick = () => {
+    setRepoUrl('https://github.com/nehasawant4/RAG-AgenticAI-Confluence');
+    setShowSuggestion(false);
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setRepoUrl(value);
+    // Show suggestion only when input is empty
+    setShowSuggestion(value === '');
+  };
+
   return (
     <div className="confluence-layout">
       <div className="confluence-container">
         <h2>GitHub Repository Files</h2>
         
         <div className="repo-input">
-          <input 
-            type="text" 
-            value={repoUrl}
-            onChange={(e) => setRepoUrl(e.target.value)}
-            placeholder="Enter GitHub repository URL (e.g., https://github.com/username/repo)"
-            className="repo-url-input"
-          />
+          <div style={{ position: 'relative', width: '100%' }}>
+            <input 
+              type="text" 
+              value={repoUrl}
+              onChange={handleInputChange}
+              onFocus={() => setShowSuggestion(repoUrl === '')}
+              onBlur={() => setTimeout(() => setShowSuggestion(false), 200)}
+              placeholder="Enter GitHub repository URL (e.g., https://github.com/username/repo)"
+              className="repo-url-input"
+            />
+            {showSuggestion && (
+              <div style={{
+                position: 'absolute',
+                top: '100%',
+                left: 0,
+                width: '100%',
+                backgroundColor: '#746bec',
+                border: '0px',
+                borderTop: 'none',
+                borderRadius: '4px',
+                zIndex: 10,
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}>
+                <div 
+                  onClick={handleSuggestionClick}
+                  style={{
+                    padding: '10px',
+                    cursor: 'pointer'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a52d0'}
+                  onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#746bec'}
+                >
+                  https://github.com/nehasawant4/RAG-AgenticAI-Confluence
+                </div>
+              </div>
+            )}
+          </div>
           <button 
             onClick={fetchGitHubRepo}
             disabled={loading}

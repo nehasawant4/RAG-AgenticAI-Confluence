@@ -8,6 +8,12 @@ function Sidebar({ activeTab, setActiveTab, isVisible }) {
       </div>
       <nav className="sidebar-nav">
         <button 
+          className={`sidebar-button ${activeTab === 'chat' ? 'active' : ''}`}
+          onClick={() => setActiveTab('chat')}
+        >
+          Chat
+        </button>
+        <button 
           className={`sidebar-button ${activeTab === 'confluence' ? 'active' : ''}`}
           onClick={() => setActiveTab('confluence')}
         >
@@ -24,12 +30,6 @@ function Sidebar({ activeTab, setActiveTab, isVisible }) {
           onClick={() => setActiveTab('upload')}
         >
           Upload File
-        </button>
-        <button 
-          className={`sidebar-button ${activeTab === 'chat' ? 'active' : ''}`}
-          onClick={() => setActiveTab('chat')}
-        >
-          Chat
         </button>
       </nav>
     </aside>
