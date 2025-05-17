@@ -40,8 +40,16 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
 
     # 🔹 Filter and construct context
     matches = [m for m in results.matches if m.score >= 0.5]
-    context = "\n\n".join([m.metadata.get("text", "") for m in matches]) if matches else ""
-    sources = [m.metadata.get("source", "N/A") for m in matches] if matches else []
+    
+    # Check if we have any relevant matches
+    if not matches:
+        return {
+            "answer": "I don't have enough information in my knowledge base to answer this question accurately.",
+            "sources": []
+        }
+    
+    context = "\n\n".join([m.metadata.get("text", "") for m in matches])
+    sources = [m.metadata.get("source", "N/A") for m in matches]
 
     # 🔹 Build and log prompt
     system_message = """
@@ -55,6 +63,8 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
     - Use backticks for inline code or parameter names
     - Respond using markdown. Wrap all code in fenced blocks with language identifiers (like ```json, ```python, etc).
     - Ensure your textual response is well-structured, readable, and properly formatted.
+    - Only answer based on the provided context. If the context doesn't contain relevant information to answer the question, state that you don't have enough information.
+    - Do not make up or infer information that isn't present in the context.
     """
     
     # Build conversation history context
@@ -90,11 +100,14 @@ Question: {question}"""
 
     # 🔹 Call GPT
     completion = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": system_message},
             {"role": "user", "content": prompt}
-        ]
+        ], 
+        temperature=0.3,
+        max_tokens=1500,
+        top_p=1.0
     )
 
     return {

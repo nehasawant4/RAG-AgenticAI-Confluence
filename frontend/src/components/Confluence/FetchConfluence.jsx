@@ -274,14 +274,14 @@ function FetchConfluence() {
                   </ul>
                   <div className="selected-pages-buttons">
                     <button 
-                      className="action-button" 
+                      className="send-button" 
                       onClick={handleAddToPinecone}
                       disabled={ingesting}
                     >
                       {ingesting ? 'Adding...' : 'Add to Vector DB'}
                     </button>
                     <button 
-                      className="action-button clear-button"
+                      className="clear-button"
                       onClick={() => setSelectedPages({})}
                       disabled={ingesting}
                     >

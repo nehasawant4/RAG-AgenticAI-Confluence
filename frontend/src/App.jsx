@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar'
 import UploadFile from './components/Upload/UploadFile'
 import ChatInterface from './components/Chat/ChatInterface'
 import FetchConfluence from './components/Confluence/FetchConfluence'
+import FetchGitHub from './components/GitHub/FetchGitHub'
 import './App.css'
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
       <main className={`main-content ${!sidebarVisible ? 'full-width' : ''}`}>
         {activeTab === 'chat' && <ChatInterface />}
         {activeTab === 'confluence' && <FetchConfluence />}
-        {activeTab === 'github' && <div className="placeholder-content">GitHub Integration Coming Soon</div>}
+        {activeTab === 'github' && <FetchGitHub />}
         {activeTab === 'upload' && <UploadFile />}
       </main>
     </div>

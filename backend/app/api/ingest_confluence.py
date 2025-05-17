@@ -56,7 +56,7 @@ def ingest_confluence_page(
 # ✅ 2. List pages in a Confluence space or under a parent
 @router.get("/list")
 def list_confluence_pages(
-    space_key: Optional[str] = Query(None, description="Optional Confluence space key"),
+    space_key: Optional[str] = "~712020d3bfc769adc846d283161672a94500f9",
     parent_id: Optional[str] = Query(None, description="Optional ancestor page ID"),
     limit: int = 50
 ):
@@ -107,10 +107,6 @@ def get_confluence_page_content(id: str = Query(..., description="Confluence pag
         content = response.json()
         html = content["body"]["storage"]["value"]
         title = content["title"]
-        
-        # Debug - print the original HTML to see what we're working with
-        print("ORIGINAL HTML:")
-        print(html[:500])  # Print first 500 chars to see structure
         
         # Create a patched version of the HTML that browsers can render
         patched_html = html
@@ -164,10 +160,6 @@ def get_confluence_page_content(id: str = Query(..., description="Confluence pag
         # Add fallback inline styling for code blocks
         processed_html = processed_html.replace('<pre class="confluence-code-block">', 
                           '<pre class="confluence-code-block" style="display:block; white-space:pre; overflow-x:auto; background-color:#1e1e1e; color:#e0e0e0; padding:16px; border-radius:4px; font-family:monospace; line-height:1.4; border:1px solid #444; max-height:500px;">')
-
-        # Debug - print a sample of the processed HTML to verify changes
-        print("PROCESSED HTML:")
-        print(processed_html[:500])  # Print first 500 chars
         
         return {
             "id": id,
@@ -208,7 +200,7 @@ def embed_confluence_page_to_pinecone(
 
         # Treat as one chunk
         texts = [text]
-        sources = [f"confluence:{title}"]
+        sources = [f"Confluence: {title}"]
 
         # Embed and store in Pinecone
         from app.services.embedder import embed_texts

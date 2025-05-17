@@ -92,7 +92,7 @@ function UploadFile() {
             id="file-upload"
             onChange={handleFileChange}
             className="file-input"
-            accept=".txt,.md,.csv,.json"
+            accept=".txt,.md,.csv,.json,.pdf"
             disabled={loading}
           />
         </div>

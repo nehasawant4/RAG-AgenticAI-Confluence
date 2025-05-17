@@ -1,4 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
+import io
+from pypdf import PdfReader
 from app.services.embedder import embed_texts
 
 router = APIRouter()
@@ -8,10 +10,25 @@ async def upload_file(file: UploadFile = File(...), namespace: str = "default"):
     try:
         # Read file content
         content = await file.read()
-        text = content.decode("utf-8").strip()
+        
+        # Check file extension to determine processing method
+        if file.filename.lower().endswith('.pdf'):
+            # Process PDF file
+            pdf_file = io.BytesIO(content)
+            pdf_reader = PdfReader(pdf_file)
+            
+            text = ""
+            for page in pdf_reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+            text = text.strip()
+        else:
+            # Process as text file
+            text = content.decode("utf-8").strip()
 
         if not text:
-            raise ValueError("Uploaded file is empty.")
+            raise ValueError("Uploaded file is empty or no text could be extracted.")
 
         # Treat the whole file as one chunk
         texts = [text]
