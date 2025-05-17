@@ -1,4 +1,4 @@
-# api/github_fetcher.py
+# backend/app/api/ingest_github.py
 from fastapi import APIRouter, HTTPException, Query
 import requests
 from app.services.embedder import embed_texts

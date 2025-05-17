@@ -1,3 +1,4 @@
+# backend/app/services/embedder.py
 import os
 from typing import List
 from dotenv import load_dotenv

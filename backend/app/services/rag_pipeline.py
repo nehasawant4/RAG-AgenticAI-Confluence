@@ -1,3 +1,4 @@
+# backend/app/services/rag_pipeline.py
 import os
 from openai import OpenAI
 from pinecone import Pinecone

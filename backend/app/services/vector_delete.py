@@ -1,3 +1,4 @@
+# backend/app/services/vector_delete.py
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 import os

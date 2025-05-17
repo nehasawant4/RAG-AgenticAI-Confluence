@@ -1,3 +1,4 @@
+# backend/app/api/query.py
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 from app.services.rag_pipeline import query_rag
