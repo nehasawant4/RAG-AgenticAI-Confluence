@@ -87,9 +87,10 @@
 .page-content h4,
 .page-content h5,
 .page-content h6 {
-  color: #fff;
+  color: #746bec;
   margin-top: 24px;
   margin-bottom: 16px;
+  text-align: left;
 }
 
 .page-content p {

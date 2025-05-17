@@ -1,0 +1,235 @@
+.landing-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px 20px;
+  color: #333;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.hero-logo {
+  max-width: 180px;
+  margin-bottom: 20px;
+  height: auto;
+}
+
+.landing-hero {
+  text-align: center;
+  margin-bottom: 10px;
+  padding: 40px 20px;
+  border-radius: 12px;
+  color: rgb(196, 196, 196);
+}
+
+.landing-hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  font-weight: 300;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.features-section,
+.how-to-section,
+.tech-section {
+  margin-bottom: 80px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 40px;
+  position: relative;
+  color: rgb(196, 196, 196);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 25px;
+  margin-top: 20px;
+}
+
+.feature-card {
+  background: rgb(20, 20, 20);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: scale(1.06);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.feature-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: white;
+}
+
+.feature-card p {
+  color: rgb(196, 196, 196);
+  line-height: 1.6;
+}
+
+.steps-container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.step {
+  display: flex;
+  margin-bottom: 40px;
+  align-items: flex-start;
+}
+
+.step-number {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 20px;
+
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.step-content p {
+  color: white;
+  line-height: 1.6;
+}
+
+.tech-details {
+  width: 80%;
+  margin: 0 auto;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.tech-details p {
+  margin-bottom: 20px;
+  line-height: 1.6;
+  color: white;
+}
+
+.tech-details ul {
+  padding-left: 20px;
+}
+
+.tech-details li {
+  margin-bottom: 10px;
+  color: white;
+  line-height: 1.6;
+}
+
+.tech-details h3 {
+  color: white;
+  margin-top: 20px;
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}
+
+.tech-stack-columns {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.tech-stack-column {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .landing-hero h1 {
+    font-size: 2.2rem;
+  }
+  
+  .tagline {
+    font-size: 1.2rem;
+  }
+  
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .step-number {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .tech-stack-columns {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+.footer {
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.footer-content a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-logo {
+  width: 22px;
+  height: 22px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.footer-logo:hover {
+  opacity: 1;
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+.footer-logo:hover path {
+  fill: #67ff66;
+}
+
+.footer p {
+  color: rgb(150, 150, 150);
+  font-size: 0.9rem;
+} 

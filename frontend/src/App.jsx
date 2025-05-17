@@ -4,10 +4,11 @@ import UploadFile from './components/Upload/UploadFile'
 import ChatInterface from './components/Chat/ChatInterface'
 import FetchConfluence from './components/Confluence/FetchConfluence'
 import FetchGitHub from './components/GitHub/FetchGitHub'
+import LandingPage from './components/Landing/LandingPage'
 import './App.css'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('chat')
+  const [activeTab, setActiveTab] = useState('')
   const [sidebarVisible, setSidebarVisible] = useState(true)
 
   const toggleSidebar = () => {
@@ -22,6 +23,7 @@ function App() {
         isVisible={sidebarVisible} 
       />
       <main className={`main-content ${!sidebarVisible ? 'full-width' : ''}`}>
+        {activeTab === '' && <LandingPage />}
         {activeTab === 'chat' && <ChatInterface />}
         {activeTab === 'confluence' && <FetchConfluence />}
         {activeTab === 'github' && <FetchGitHub />}
