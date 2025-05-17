@@ -24,7 +24,7 @@ function FetchGitHub() {
     setError(null);
     
     try {
-      const response = await fetch(`http://localhost:8000/ingest/github?repo_url=${encodeURIComponent(repoUrl)}`);
+      const response = await fetch(`https://rag-assist.up.railway.app/ingest/github?repo_url=${encodeURIComponent(repoUrl)}`);
       
       if (!response.ok) {
         throw new Error('Failed to fetch GitHub repository');
@@ -119,7 +119,7 @@ function FetchGitHub() {
         
         try {
           const response = await fetch(
-            `http://localhost:8000/ingest/github/embed?file_url=${encodeURIComponent(fileInfo.download_url)}&file_path=${encodeURIComponent(fileInfo.path)}`, 
+            `https://rag-assist.up.railway.app/ingest/github/embed?file_url=${encodeURIComponent(fileInfo.download_url)}&file_path=${encodeURIComponent(fileInfo.path)}`, 
             { method: 'POST' }
           );
           

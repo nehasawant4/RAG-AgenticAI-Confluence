@@ -20,7 +20,7 @@ function FetchConfluence() {
   const fetchConfluencePages = async (spaceKey = null) => {
     setLoading(true);
     try {
-      let url = 'http://localhost:8000/ingest/confluence/list';
+      let url = 'https://rag-assist.up.railway.app/ingest/confluence/list';
       if (spaceKey) {
         url += `?space_key=${spaceKey}`;
       }
@@ -170,7 +170,7 @@ function FetchConfluence() {
       // Process each selected page one by one
       for (const pageId of selectedIds) {
         try {
-          const response = await fetch(`http://localhost:8000/ingest/confluence/embed?id=${pageId}`, {
+          const response = await fetch(`https://rag-assist.up.railway.app/ingest/confluence/embed?id=${pageId}`, {
             method: 'POST',
           });
           

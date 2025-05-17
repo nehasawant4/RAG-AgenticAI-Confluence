@@ -24,7 +24,7 @@ function ConfluencePreview({ pageId, onClose }) {
     setLoading(true);
     try {
       // Use the /content endpoint to fetch page content
-      const response = await fetch(`http://localhost:8000/ingest/confluence/content?id=${pageId}`);
+      const response = await fetch(`https://rag-assist.up.railway.app/ingest/confluence/content?id=${pageId}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch page content');

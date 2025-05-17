@@ -84,7 +84,7 @@ function ChatInterface() {
       console.log("Sending history:", history);
       
       // Call the query API
-      const response = await fetch('http://localhost:8000/query/', {
+      const response = await fetch('https://rag-assist.up.railway.app/query/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
