@@ -77,7 +77,7 @@ function UploadFile() {
   return (
     <div className="upload-container">
       <h2>Upload File</h2>
-      <p>Upload a text file to be processed and embedded in the vector database.</p>
+      <p>Upload a file to be processed and embedded in the vector database.</p>
       
       <form onSubmit={handleSubmit} className="upload-form">
         <div className="file-input-container">

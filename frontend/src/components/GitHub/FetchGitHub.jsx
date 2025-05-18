@@ -27,7 +27,7 @@ function FetchGitHub() {
       const response = await fetch(`https://rag-assist.up.railway.app/ingest/github?repo_url=${encodeURIComponent(repoUrl)}`);
       
       if (!response.ok) {
-        throw new Error('Failed to fetch GitHub repository');
+        throw new Error('Failed to fetch GitHub repository. Make sure the URL is correct and the repository is public.');
       }
       
       const data = await response.json();
