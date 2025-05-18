@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './FetchGitHub.css';
 import GitHubPreview from './GitHubPreview';
 
@@ -13,6 +13,34 @@ function FetchGitHub() {
   const [ingestResults, setIngestResults] = useState({});
   const [previewFile, setPreviewFile] = useState(null);
   const [showSuggestion, setShowSuggestion] = useState(false);
+  const [recentRepos, setRecentRepos] = useState([]);
+
+  useEffect(() => {
+    // Load recent repos from session storage on component mount
+    const storedRepos = sessionStorage.getItem('recentRepos');
+    if (storedRepos) {
+      setRecentRepos(JSON.parse(storedRepos));
+    }
+  }, []);
+
+  const addToRecentRepos = (url) => {
+    // Don't add empty URLs
+    if (!url) return;
+    
+    // Create new array with the current URL at the front
+    const updatedRepos = [url];
+    
+    // Add other recent repos, avoiding duplicates
+    recentRepos.forEach(repo => {
+      if (repo !== url && updatedRepos.length < 5) { // Limit to 5 recent repos
+        updatedRepos.push(repo);
+      }
+    });
+    
+    // Update state and session storage
+    setRecentRepos(updatedRepos);
+    sessionStorage.setItem('recentRepos', JSON.stringify(updatedRepos));
+  };
 
   const fetchGitHubRepo = async () => {
     if (!repoUrl) {
@@ -32,6 +60,9 @@ function FetchGitHub() {
       
       const data = await response.json();
       setFileTree(data.files);
+      
+      // Add current repo to recent repos
+      addToRecentRepos(repoUrl);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -204,8 +235,8 @@ function FetchGitHub() {
     .filter(path => selectedFiles[path].type === 'file')
     .length;
 
-  const handleSuggestionClick = () => {
-    setRepoUrl('https://github.com/nehasawant4/RAG-AgenticAI-Confluence');
+  const handleSuggestionClick = (url) => {
+    setRepoUrl(url);
     setShowSuggestion(false);
   };
 
@@ -246,7 +277,7 @@ function FetchGitHub() {
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }}>
                 <div 
-                  onClick={handleSuggestionClick}
+                  onClick={() => handleSuggestionClick('https://github.com/nehasawant4/RAG-AgenticAI-Confluence')}
                   style={{
                     padding: '10px',
                     cursor: 'pointer'
@@ -256,6 +287,23 @@ function FetchGitHub() {
                 >
                   https://github.com/nehasawant4/RAG-AgenticAI-Confluence
                 </div>
+                
+                {recentRepos.length > 0 && <div style={{ padding: '5px 10px', fontWeight: 'bold' }}>Recent Repositories:</div>}
+                
+                {recentRepos.map((repo, index) => (
+                  <div 
+                    key={index}
+                    onClick={() => handleSuggestionClick(repo)}
+                    style={{
+                      padding: '10px',
+                      cursor: 'pointer'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#5a52d0'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#746bec'}
+                  >
+                    {repo}
+                  </div>
+                ))}
               </div>
             )}
           </div>
