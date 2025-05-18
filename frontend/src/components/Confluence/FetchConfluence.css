@@ -63,16 +63,31 @@
   accent-color: #333;
 }
 
+.tree-item:hover .expand-icon {
+  color: #333;
+}
+
 .expand-icon {
   display: inline-block;
   width: 16px;
   height: 16px;
   margin-right: 8px;
-  font-size: 12px;
+  font-size: 14px;
   text-align: center;
   line-height: 16px;
   cursor: pointer;
-  color: white;
+  color: #746bec;
+  position: relative;
+}
+
+.expand-icon::after {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: -12px;
+  right: -12px;
+  bottom: -12px;
+  cursor: pointer;
 }
 
 .expand-icon.expanded {
