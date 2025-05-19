@@ -9,8 +9,17 @@ import LandingPage from './components/Landing/LandingPage'
 import './App.css'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('')
+  const [activeTab, setActiveTab] = useState(() => {
+    // Get the active tab from sessionStorage, default to empty string if not found
+    return sessionStorage.getItem('activeTab') || ''
+  })
   const [sidebarVisible, setSidebarVisible] = useState(true)
+
+  // Update sessionStorage whenever activeTab changes
+  const handleTabChange = (tab) => {
+    setActiveTab(tab)
+    sessionStorage.setItem('activeTab', tab)
+  }
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible)
@@ -20,7 +29,7 @@ function App() {
     <div className="app-container">
       <Sidebar 
         activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
+        setActiveTab={handleTabChange} 
         isVisible={sidebarVisible} 
       />
       <main className={`main-content ${!sidebarVisible ? 'full-width' : ''}`}>
@@ -29,7 +38,7 @@ function App() {
         {activeTab === 'confluence' && <FetchConfluence />}
         {activeTab === 'github' && <FetchGitHub />}
         {activeTab === 'upload' && <UploadFile />}
-        {activeTab === 'sources' && <ListSources setActiveTab={setActiveTab} />}
+        {activeTab === 'sources' && <ListSources setActiveTab={handleTabChange} />}
       </main>
     </div>
   )
