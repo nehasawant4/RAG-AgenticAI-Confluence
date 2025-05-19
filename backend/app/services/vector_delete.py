@@ -11,6 +11,31 @@ router = APIRouter()
 pc = Pinecone(api_key=os.getenv("PINECONE_API"))
 index = pc.Index(os.getenv("PINECONE_INDEX_NAME"))
 
+@router.get("/sources")
+def list_sources(namespace: str = "default", limit: int = 200):
+    try:
+        dummy_vector = [0.0] * 1536  # For text-embedding-3-small
+        results = index.query(
+            vector=dummy_vector,
+            top_k=limit,
+            include_metadata=True,
+            namespace=namespace
+        )
+        
+        # Extract unique sources
+        sources = set()
+        for match in results.matches:
+            src = match.metadata.get("source")
+            if src:
+                sources.add(src)
+
+        return {"sources": sorted(sources), "count": len(sources)}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
 @router.delete("/by-source")
 def delete_vectors_by_source(
     source: str = Query(..., description="Exact value of the source metadata (e.g. 'confluence:Overview')"),

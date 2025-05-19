@@ -69,7 +69,7 @@ function LandingPage() {
           <div className="feature-card">
             <div className="feature-icon">📄</div>
             <h3>File Upload</h3>
-            <p>Upload local files (PDF, TXT, MD, CSV, JSON) to include in your knowledge base.</p>
+            <p>Upload local files (PDF, TXT, CSV, JSON) to include in your knowledge base.</p>
           </div>
         </div>
       </div>
@@ -105,30 +105,10 @@ function LandingPage() {
       </div>
 
       <div className="tech-section">
-        <h2>Technology Stack</h2>
+        <h2>Tech Stack</h2>
         <div className="tech-details">
-          <p>This application combines Retrieval Augmented Generation (RAG) with agentic AI capabilities to provide a powerful document interaction system.</p>
-          
-          <div className="tech-stack-columns">
-            <div className="tech-stack-column">
-              <h3>Frontend</h3>
-              <ul>
-                <li><strong>React 19</strong> - Modern UI library for building reactive interfaces</li>
-                <li><strong>Vite</strong> - Next-generation frontend build tooling</li>
-                <li><strong>React Markdown</strong> - Markdown rendering for AI responses</li>
-                <li><strong>Syntax Highlighter</strong> - Code syntax highlighting in chat</li>
-              </ul>
-            </div>
-            
-            <div className="tech-stack-column">
-              <h3>Backend</h3>
-              <ul>
-                <li><strong>FastAPI</strong> - Modern, high-performance Python web framework</li>
-                <li><strong>LangChain</strong> - Framework for building LLM applications</li>
-                <li><strong>OpenAI API</strong> - Large language model integration</li>
-                <li><strong>Pinecone</strong> - Vector database for efficient retrieval</li>
-              </ul>
-            </div>
+          <div className="tech-stack">
+            <h4 style={{color: 'white', textAlign: 'center'}}>React · FastAPI · LangChain · OpenAI API · Pinecone</h4>
           </div>
         </div>
       </div>

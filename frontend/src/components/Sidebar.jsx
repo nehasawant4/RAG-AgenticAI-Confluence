@@ -40,6 +40,12 @@ function Sidebar({ activeTab, setActiveTab, isVisible }) {
         >
           Upload File
         </button>
+        <button 
+          className={`sidebar-button ${activeTab === 'sources' ? 'active' : ''}`}
+          onClick={() => setActiveTab('sources')}
+        >
+          Vector Database
+        </button>
       </nav>
     </aside>
   );

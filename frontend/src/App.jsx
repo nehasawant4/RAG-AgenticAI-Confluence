@@ -4,6 +4,7 @@ import UploadFile from './components/Upload/UploadFile'
 import ChatInterface from './components/Chat/ChatInterface'
 import FetchConfluence from './components/Confluence/FetchConfluence'
 import FetchGitHub from './components/GitHub/FetchGitHub'
+import ListSources from './components/Sources/ListSources'
 import LandingPage from './components/Landing/LandingPage'
 import './App.css'
 
@@ -28,6 +29,7 @@ function App() {
         {activeTab === 'confluence' && <FetchConfluence />}
         {activeTab === 'github' && <FetchGitHub />}
         {activeTab === 'upload' && <UploadFile />}
+        {activeTab === 'sources' && <ListSources setActiveTab={setActiveTab} />}
       </main>
     </div>
   )

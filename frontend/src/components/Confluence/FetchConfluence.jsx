@@ -12,6 +12,7 @@ function FetchConfluence() {
   const [selectedPages, setSelectedPages] = useState({});
   const [ingesting, setIngesting] = useState(false);
   const [ingestResults, setIngestResults] = useState({});
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     fetchConfluencePages();
@@ -165,7 +166,7 @@ function FetchConfluence() {
     
     setIngesting(true);
     const results = {};
-    
+    let successMsg = '';
     try {
       // Process each selected page one by one
       for (const pageId of selectedIds) {
@@ -189,7 +190,10 @@ function FetchConfluence() {
       
       // Show success message or handle errors
       const successCount = Object.values(results).filter(r => r.success).length;
-      alert(`Successfully added ${successCount} out of ${selectedIds.length} pages to the vector database.`);
+      successMsg = `Successfully added ${successCount} out of ${selectedIds.length} pages to the vector database.`;
+      setSuccessMessage(successMsg);
+      setTimeout(() => setSuccessMessage(''), 4000);
+      setSelectedPages({}); // Clear selection automatically
       
     } catch (err) {
       setError(`Error ingesting pages: ${err.message}`);
@@ -263,7 +267,9 @@ function FetchConfluence() {
               <p className="page-title">
                 {selectedCount} page{selectedCount !== 1 ? 's' : ''} selected
               </p>
-              
+              {successMessage && (
+                <div className="success-message" style={{margin: '0px'}}>{successMessage}</div>
+              )}
               {selectedCount > 0 && (
                 <div className="selected-pages-list">
                   <h4>Selected Pages:</h4>

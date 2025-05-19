@@ -14,6 +14,7 @@ function FetchGitHub() {
   const [previewFile, setPreviewFile] = useState(null);
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [recentRepos, setRecentRepos] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
     // Load recent repos from session storage on component mount
@@ -142,7 +143,7 @@ function FetchGitHub() {
     
     setIngesting(true);
     const results = {};
-    
+    let successMsg = '';
     try {
       // Process each selected file one by one
       for (const filePath of selectedFilePaths) {
@@ -169,7 +170,10 @@ function FetchGitHub() {
       
       // Show success message or handle errors
       const successCount = Object.values(results).filter(r => r.success).length;
-      alert(`Successfully added ${successCount} out of ${selectedFilePaths.length} files to the vector database.`);
+      successMsg = `Successfully added ${successCount} out of ${selectedFilePaths.length} files to the vector database.`;
+      setSuccessMessage(successMsg);
+      setTimeout(() => setSuccessMessage(''), 4000);
+      setSelectedFiles({}); // Clear selection automatically
       
     } catch (err) {
       setError(`Error ingesting files: ${err.message}`);
@@ -328,6 +332,9 @@ function FetchGitHub() {
               <p className="page-title">
                 {selectedCount} file{selectedCount !== 1 ? 's' : ''} selected
               </p>
+              {successMessage && (
+                <div className="success-message" style={{margin: '0px'}}>{successMessage}</div>
+              )}
               
               {selectedCount > 0 && (
                 <div className="selected-pages-list">

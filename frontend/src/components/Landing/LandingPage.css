@@ -87,7 +87,7 @@ h2 {
 }
 
 .steps-container {
-  width: 80%;
+  width: 70%;
   margin: 0 auto;
 }
 
@@ -127,39 +127,22 @@ h2 {
 }
 
 .tech-details {
-  width: 80%;
+  width: 70%;
   margin: 0 auto;
-  padding: 30px;
   border-radius: 12px;
+  padding: 20px;
 }
 
-.tech-details p {
-  margin-bottom: 20px;
-  line-height: 1.6;
-  color: white;
-}
-
-.tech-details ul {
-  padding-left: 20px;
-}
-
-.tech-details li {
-  margin-bottom: 10px;
-  color: white;
-  line-height: 1.6;
-}
-
-.tech-details h3 {
-  color: white;
-  margin-top: 20px;
-  margin-bottom: 15px;
-  font-size: 1.4rem;
+.tech-stack {
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .tech-stack-columns {
   display: flex;
   gap: 30px;
   margin-bottom: 20px;
+  margin-left: 25px;
 }
 
 .tech-stack-column {
@@ -193,6 +176,10 @@ h2 {
   .tech-stack-columns {
     flex-direction: column;
     gap: 10px;
+  }
+  
+  .tech-details {
+    width: 90%;
   }
 }
 
