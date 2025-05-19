@@ -93,22 +93,35 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5,
             print(f"Error processing history: {str(e)}")
             conversation_context = ""
     
-    prompt = f"""You are an AI assistant answering based on retrieved documents only.
+    # Construct prompt based on whether image text is available
+    prompt_parts = [
+        "You are an AI assistant answering based on retrieved documents only.",
+        "",
+        "## User's Query:",
+        f"- Query Content: {question}"
+    ]
+    
+    if image_text:
+        prompt_parts.insert(3, f"- Image Content: {image_text}")
+    
+    prompt_parts.extend([
+        "",
+        "## Context from Vector Database:",
+        context,
+        "",
+        "## Previous Conversation:",
+        conversation_context,
+        "",
+        "## Instructions:",
+        "- Answer based on the provided context and query only.",
+        "- If the context doesn't contain relevant information, state that you don't have enough information."
+    ])
+    
+    if image_text:
+        prompt_parts.append("- Check if the 'Image Content' contains any information that is relevant to the query or context.")
+        prompt_parts.append("- If it does, incorporate it in your answer. If not, say that you dont have any information about it.")
 
-    ## User's Query:
-    - Image Content: {image_text or '[No image provided]'}
-    - Query Content: {question}
-
-    ## Context from Vector Database:
-    {context}
-
-    ## Previous Conversation:
-    {conversation_context}
-
-    ## Instructions:
-    - Check if the 'Image Content' contains any information that is relevant to the query or context.
-    - If it does, incorporate it in your answer. If not, say that you dont have any information about it.
-    """
+    prompt = "\n".join(prompt_parts)
 
     # 🔹 Call GPT
     completion = client.chat.completions.create(
