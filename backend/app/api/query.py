@@ -1,42 +1,36 @@
-# backend/app/api/query.py
-from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel
-from app.services.rag_pipeline import query_rag
-from typing import List, Optional, Dict, Any, Union
-import logging
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from app.services.rag_pipeline import query_rag, extract_text_from_image
+from typing import List, Optional
+import json
 
 router = APIRouter()
 
-class Message(BaseModel):
-    text: str
-    sender: str
-
-class QueryRequest(BaseModel):
-    question: str
-    history: Optional[List[Dict[str, Any]]] = None
-
 @router.post("/")
-async def query_docs(request: QueryRequest, req: Request):
+async def query_docs(
+    question: str = Form(...),
+    history: Optional[str] = Form(None),
+    image: Optional[UploadFile] = File(None)
+):
     try:
-        # Log the request body for debugging
-        request_body = await req.json()
-        logger.info(f"Received request: {request_body}")
-        
-        # Get history from request or default to empty list
-        history = request.history or []
-        
-        # Log history for debugging
-        logger.info(f"History count: {len(history)}")
-        if history:
-            logger.info(f"First history item type: {type(history[0])}")
-        
-        # Call the RAG pipeline
-        result = query_rag(request.question, history=history)
+        # Parse history JSON string if provided
+        parsed_history = json.loads(history) if history else []
+
+        # Extract image text if an image is uploaded
+        image_text = None
+        if image:
+            try:
+                contents = await image.read()
+                with open("temp.jpg", "wb") as f:
+                    f.write(contents)
+                image_text = extract_text_from_image("temp.jpg")
+            except Exception as e:
+                print(f"Failed to process uploaded image: {str(e)}")
+                image_text = "[Image processing failed]"
+            print(image_text)
+
+        # Call RAG pipeline with optional image text
+        result = query_rag(question=question, history=parsed_history, image_text=image_text)
         return result
+
     except Exception as e:
-        logger.error(f"Error in query_docs: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

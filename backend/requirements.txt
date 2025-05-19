@@ -23,11 +23,13 @@ langsmith==0.3.42
 openai==1.78.1
 orjson==3.10.18
 packaging==24.2
+pillow==11.2.1
 pinecone==6.0.2
 pinecone-plugin-interface==0.0.7
 pydantic==2.11.4
 pydantic_core==2.33.2
 pypdf==5.5.0
+pytesseract==0.3.13
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 python-multipart==0.0.20

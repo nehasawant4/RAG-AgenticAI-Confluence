@@ -4,6 +4,8 @@ from openai import OpenAI
 from pinecone import Pinecone
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional, Union
+from PIL import Image
+import pytesseract
 
 load_dotenv()
 
@@ -11,19 +13,21 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index = pc.Index(os.getenv("PINECONE_INDEX_NAME"))
 
-def query_rag(question: str, namespace: str = "default", top_k: int = 5, history: Optional[List[Union[Dict[str, str], Any]]] = None) -> dict:
-    """
-    Query the RAG system with a question and optional conversation history.
-    
-    Args:
-        question: The user's question
-        namespace: Pinecone namespace
-        top_k: Number of results to retrieve
-        history: List of message objects with 'text' and 'sender' fields
-        
-    Returns:
-        Dictionary with answer and sources
-    """
+def extract_text_from_image(image_path: str) -> str:
+    try:
+        raw_text = pytesseract.image_to_string(Image.open(image_path))
+        cleaned = raw_text.strip()
+        return cleaned if cleaned else "[Unrecognizable]"
+    except Exception as e:
+        print(f"OCR extraction error: {e}")
+        return "[Image processing failed]"
+
+def query_rag(question: str, namespace: str = "default", top_k: int = 5,
+              history: Optional[List[Union[Dict[str, str], Any]]] = None,
+              image_text: Optional[str] = None) -> dict:
+    # Merge question and image text
+    if image_text:
+        question += f"\n\n[Image Content]: {image_text}"
     # 🔹 Embed the query
     response = client.embeddings.create(
         input=[question],
@@ -89,12 +93,22 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5, history
             print(f"Error processing history: {str(e)}")
             conversation_context = ""
     
-    prompt = f"""Answer the question based on the following context:
+    prompt = f"""You are an AI assistant answering based on retrieved documents only.
 
-{context}
+    ## User's Query:
+    - Image Content: {image_text or '[No image provided]'}
+    - Query Content: {question}
 
-{conversation_context}
-Question: {question}"""
+    ## Context from Vector Database:
+    {context}
+
+    ## Previous Conversation:
+    {conversation_context}
+
+    ## Instructions:
+    - Check if the 'Image Content' contains any information that is relevant to the query or context.
+    - If it does, incorporate it in your answer. If not, say that you dont have any information about it.
+    """
 
     # 🔹 Call GPT
     completion = client.chat.completions.create(

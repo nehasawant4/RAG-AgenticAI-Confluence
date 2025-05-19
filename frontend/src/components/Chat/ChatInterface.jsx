@@ -17,6 +17,7 @@ function ChatInterface() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [sessionId, setSessionId] = useState(() => {
     // Retrieve existing sessionId from sessionStorage or create a new one
     return sessionStorage.getItem('chatSessionId') || 
@@ -58,12 +59,25 @@ function ChatInterface() {
     sessionStorage.setItem('chatMessages', JSON.stringify(defaultMessages));
   };
 
+  const handleImageSelect = (image) => {
+    setSelectedImage(image);
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
+    if ((!input.trim() && !selectedImage) || isLoading) return;
+
+    // Create user message text
+    let userMessageText = input.trim();
 
     // Add user message
-    const newUserMessage = { id: messages.length + 1, text: input, sender: "user" };
+    const newUserMessage = { 
+      id: messages.length + 1, 
+      text: userMessageText, 
+      sender: "user",
+      hasImage: !!selectedImage,
+      imageUrl: selectedImage ? URL.createObjectURL(selectedImage) : null
+    };
     
     // Clear input and update messages
     const userQuery = input;
@@ -83,16 +97,20 @@ function ChatInterface() {
       
       console.log("Sending history:", history);
       
-      // Call the query API
+      // Create FormData to support file upload
+      const formData = new FormData();
+      formData.append('question', userQuery);
+      formData.append('history', JSON.stringify(history));
+      
+      // Add the image if one is selected
+      if (selectedImage) {
+        formData.append('image', selectedImage);
+      }
+      
+      // Call the query API with FormData
       const response = await fetch('https://rag-assist.up.railway.app/query/', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          question: userQuery,
-          history: history
-        }),
+        body: formData,
       });
       
       if (!response.ok) {
@@ -126,6 +144,7 @@ function ChatInterface() {
       console.error("Error querying API:", error);
     } finally {
       setIsLoading(false);
+      setSelectedImage(null); // Clear the selected image after sending
     }
   };
 
@@ -142,9 +161,10 @@ function ChatInterface() {
         />
         <ChatInput 
           input={input} 
-          setInput={setInput} 
+          setInput={setInput}
           handleSendMessage={handleSendMessage} 
-          isLoading={isLoading} 
+          isLoading={isLoading}
+          onImageSelect={handleImageSelect}
         />
       </div>
     </div>
