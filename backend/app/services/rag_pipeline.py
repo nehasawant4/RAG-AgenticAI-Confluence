@@ -25,6 +25,17 @@ def extract_text_from_image(image_path: str) -> str:
 def query_rag(question: str, namespace: str = "default", top_k: int = 5,
               history: Optional[List[Union[Dict[str, str], Any]]] = None,
               image_text: Optional[str] = None) -> dict:
+    # Check if vector database is empty
+    try:
+        stats = index.describe_index_stats()
+        if stats.namespaces.get(namespace, {}).get('vector_count', 0) == 0:
+            return {
+                "answer": "The vector database is empty. Please add files to proceed.",
+                "sources": []
+            }
+    except Exception as e:
+        print(f"Error checking vector database: {str(e)}")
+
     # Merge question and image text
     if image_text:
         question += f"\n\n[Image Content]: {image_text}"
