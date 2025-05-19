@@ -33,6 +33,14 @@
   opacity: 0.8;
 }
 
+.logo-icon {
+  transition: all 0.2s ease;
+}
+
+.logo-icon:hover {
+  transform: scale(1.1);
+}
+
 .logo h2 {
   color: #63da95;
   margin: 0;
@@ -48,7 +56,7 @@
 
 .sidebar-button {
   text-align: left;
-  padding: 12px 15px;
+  padding: 12px 20px;
   border: 0px;
   background-color: transparent;
   color: white;
@@ -61,6 +69,9 @@
   color: #63da95;
 }
 
+.sidebar-button:hover {
+  transform: scale(1.02);
+}
 /* Toggle Sidebar Button */
 .toggle-sidebar-button {
   position: absolute;
@@ -354,6 +365,7 @@
 
 .upload-button:hover {
   background-color: #5a52d0;
+  transform: scale(1.02);
 }
 
 .upload-button:disabled {
@@ -540,6 +552,7 @@
 
 .attach-button:hover {
   color: #63da95;
+  transform: scale(1.02);
 }
 
 .message-image-indicator {
