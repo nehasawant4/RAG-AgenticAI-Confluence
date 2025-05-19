@@ -222,4 +222,17 @@ h2 {
 .footer p {
   color: rgb(150, 150, 150);
   font-size: 0.9rem;
+}
+
+.logo-link {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.logo-link:hover {
+  transform: scale(1.2);
+} 
+
+.logo-link:active {
+  transform: scale(0.9);
 } 

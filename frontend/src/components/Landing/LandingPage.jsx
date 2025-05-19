@@ -6,7 +6,9 @@ function LandingPage() {
   return (
     <div className="landing-container">
       <div className="landing-hero">
-        <img src={logo} alt="RAG Assist Logo" className="hero-logo" />
+        <a href="https://github.com/nehasawant4/RAG-AgenticAI-Confluence" target="_blank" rel="noopener noreferrer" className="logo-link">
+          <img src={logo} alt="RAG Assist Logo" className="hero-logo" />
+        </a>
         <h1>Welcome to RAG Assist</h1>
         <p className="tagline">An AI that speaks GitHub, Confluence, and your stack.</p>
       </div>
