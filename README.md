@@ -1,4 +1,6 @@
-# RAG-AgenticAI-Confluence
+# GitFluence
+
+An AI that speaks GitHub, Confluence, and your Stack.
 
 ## Installation
 
