@@ -108,7 +108,7 @@ function ChatInterface() {
       }
       
       // Call the query API with FormData
-      const response = await fetch(`/api/query/`, {
+      const response = await fetch(`/api/query`, {
         method: 'POST',
         body: formData,
       });
