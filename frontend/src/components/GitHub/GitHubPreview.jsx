@@ -15,7 +15,7 @@ function GitHubPreview({ downloadUrl, filePath, onClose }) {
   const fetchFileContent = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://rag-assist.up.railway.app/ingest/github/fetch-file-content?download_url=${encodeURIComponent(downloadUrl)}`);
+      const response = await fetch(`/api/ingest/github/fetch-file-content?download_url=${encodeURIComponent(downloadUrl)}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch file content');

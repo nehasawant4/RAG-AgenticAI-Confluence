@@ -108,7 +108,7 @@ function ChatInterface() {
       }
       
       // Call the query API with FormData
-      const response = await fetch('https://rag-assist.up.railway.app/query/', {
+      const response = await fetch(`/api/query/`, {
         method: 'POST',
         body: formData,
       });

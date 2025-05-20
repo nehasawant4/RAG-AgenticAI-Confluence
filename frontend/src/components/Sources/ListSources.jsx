@@ -31,7 +31,7 @@ function ListSources({ setActiveTab }) {
   const fetchSources = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://rag-assist.up.railway.app/delete/sources`);
+      const response = await fetch(`/api/delete/sources`);
       if (!response.ok) {
         throw new Error('Failed to fetch sources');
       }
@@ -83,7 +83,7 @@ function ListSources({ setActiveTab }) {
       
       for (const source of sourcesToDelete) {
         try {
-          const response = await fetch(`https://rag-assist.up.railway.app/delete/by-source?source=${encodeURIComponent(source)}`, {
+          const response = await fetch(`/api/delete/by-source?source=${encodeURIComponent(source)}`, {
             method: 'DELETE',
           });
           

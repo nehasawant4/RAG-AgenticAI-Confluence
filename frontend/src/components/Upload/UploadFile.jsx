@@ -52,7 +52,7 @@ function UploadFile() {
       formData.append('file', file);
       formData.append('namespace', 'default');
 
-      const response = await fetch('https://rag-assist.up.railway.app/upload', {
+      const response = await fetch(`/api/upload`, {
         method: 'POST',
         body: formData,
       });
