@@ -22,7 +22,7 @@ def extract_text_from_image(image_path: str) -> str:
         print(f"OCR extraction error: {e}")
         return "[Image processing failed]"
 
-def query_rag(question: str, namespace: str = "default", top_k: int = 5,
+def query_rag(question: str, namespace: str = "default", top_k: int = 3,
               history: Optional[List[Union[Dict[str, str], Any]]] = None,
               image_text: Optional[str] = None) -> dict:
     # Check if vector database is empty
@@ -35,13 +35,37 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 5,
             }
     except Exception as e:
         print(f"Error checking vector database: {str(e)}")
-
+    
+    # Create a contextualized query by incorporating previous conversation
+    contextualized_query = question
+    
+    # Check if this might be a follow-up question (short query)
+    is_likely_followup = len(question.split()) <= 5  # Heuristic for short questions
+    
+    if is_likely_followup and history and len(history) > 0:
+        try:
+            # Get the most recent user message before this one
+            previous_user_messages = [msg["text"] for msg in history 
+                                     if isinstance(msg, dict) and msg.get("sender") == "user"]
+            
+            if previous_user_messages:
+                # Take up to 3 most recent user messages
+                recent_messages = previous_user_messages[-3:]
+                
+                # Combine the recent messages with the current question
+                context_string = " ".join(recent_messages)
+                contextualized_query = f"{context_string} {question}"
+                print(f"Expanded follow-up query: {contextualized_query}")
+        except Exception as e:
+            print(f"Error creating contextualized query: {str(e)}")
+    
     # Merge question and image text
     if image_text:
-        question += f"\n\n[Image Content]: {image_text}"
-    # 🔹 Embed the query
+        contextualized_query += f"\n\n[Image Content]: {image_text}"
+    
+    # 🔹 Embed the contextualized query
     response = client.embeddings.create(
-        input=[question],
+        input=[contextualized_query],
         model="text-embedding-3-small"
     )
     query_embed = response.data[0].embedding
