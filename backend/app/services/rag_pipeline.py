@@ -154,7 +154,7 @@ def query_rag(question: str, namespace: str = "default", top_k: int = 3,
     
     if image_text:
         prompt_parts.append("- Check if the 'Image Content' contains any information that is relevant to the query or context.")
-        prompt_parts.append("- If it does, incorporate it in your answer. If not, say that you dont have any information about it.")
+        prompt_parts.append("- If it does, incorporate it in your answer.")
 
     prompt = "\n".join(prompt_parts)
 
