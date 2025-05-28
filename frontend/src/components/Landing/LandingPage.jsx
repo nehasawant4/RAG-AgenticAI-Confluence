@@ -110,7 +110,7 @@ function LandingPage() {
         <h2>Tech Stack</h2>
         <div className="tech-details">
           <div className="tech-stack">
-            <h4 style={{color: 'white', textAlign: 'center'}}>React · FastAPI · LangChain · OpenAI API · Pinecone</h4>
+            <h4 style={{color: 'white', textAlign: 'center'}}>React · FastAPI · OpenAI API · Pinecone</h4>
           </div>
         </div>
       </div>
